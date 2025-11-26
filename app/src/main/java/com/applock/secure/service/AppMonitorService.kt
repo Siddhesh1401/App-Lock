@@ -20,7 +20,7 @@ class AppMonitorService : AccessibilityService() {
         serviceScope.launch {
             database.lockedAppDao().getAllLockedApps().collect { apps ->
                 lockedPackages.clear()
-                locked Packages.addAll(apps.map { it.packageName })
+                lockedPackages.addAll(apps.map { it.packageName })
             }
         }
     }
