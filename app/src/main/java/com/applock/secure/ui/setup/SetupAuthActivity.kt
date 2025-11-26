@@ -26,7 +26,6 @@ class SetupAuthActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setup_auth)
         
         securityPrefs = SecurityPreferences(this)
         
