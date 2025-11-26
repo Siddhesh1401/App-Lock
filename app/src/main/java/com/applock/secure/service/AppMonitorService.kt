@@ -25,12 +25,26 @@ class AppMonitorService : AccessibilityService() {
         }
     }
     
+    private var lastLockedPackage: String? = null
+    private var lastLockTime: Long = 0
+    
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             val packageName = event.packageName?.toString() ?: return
             
+            // Ignore our own package and lock screen
+            if (packageName == this.packageName) return
+            
+            // Prevent rapid re-triggering (cooldown of 2 seconds)
+            val currentTime = System.currentTimeMillis()
+            if (packageName == lastLockedPackage && currentTime - lastLockTime < 2000) {
+                return
+            }
+            
             // Check if this package is locked
-            if (packageName in lockedPackages && packageName != this.packageName) {
+            if (packageName in lockedPackages) {
+                lastLockedPackage = packageName
+                lastLockTime = currentTime
                 showLockScreen(packageName)
             }
         }
